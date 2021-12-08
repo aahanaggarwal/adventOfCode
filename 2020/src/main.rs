@@ -1,6 +1,7 @@
 pub mod day1;
 pub mod day2;
 pub mod day3;
+pub mod day4;
 use std::env;
 
 fn main() {
@@ -23,6 +24,7 @@ fn main() {
         1 => day1::solve(&file_name, part),
         2 => day2::solve(&file_name, part),
         3 => day3::solve(&file_name, part),
+        4 => day4::solve(&file_name, part),
         _ => {
             println!("Invalid args!");
             -1
