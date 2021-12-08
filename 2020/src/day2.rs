@@ -60,7 +60,7 @@ fn part2(password_entries: &Vec<Password>) -> i32 {
     count
 }
 
-pub fn solve(file_name: &str, part: i32) -> i32 {
+pub fn solve(file_name: &str, part: i32) -> i128 {
 
     let contents = fs::read_to_string(file_name).expect("File Error");
     println!("{}", contents);
@@ -73,8 +73,8 @@ pub fn solve(file_name: &str, part: i32) -> i32 {
         .collect();
     
     match part {
-        1 => part1(&password_entries),
-        2 => part2(&password_entries),
+        1 => part1(&password_entries).into(),
+        2 => part2(&password_entries).into(),
         _ => -1
     }
 }
