@@ -11,11 +11,13 @@ fn main() {
 
     let file_ext: &str = if args.len() == 4 {"test"} else {"txt"};
     let answer: i32;
+    let day_num: i32 = args[1].parse().unwrap();
 
-    match args[1].parse() {
-        Ok(1) => {
-            let file_name = format!("inputs/day{}.{}", 1, file_ext);
+    let file_name = format!("inputs/day{}.{}", day_num, file_ext);
 
+
+    match day_num {
+        1 => {
             let part: i32 = args[2].parse().unwrap();
             answer = day1::solve(&file_name, part);
         }
@@ -24,6 +26,7 @@ fn main() {
             println!("Invalid args!")
         }
     }
-
-    println!("{}", answer);
+    if answer != -1{
+        println!("{}", answer);
+    }
 }

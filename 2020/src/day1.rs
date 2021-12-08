@@ -1,4 +1,6 @@
 use std::fs;
+use std::collections::HashSet;
+use std::iter::FromIterator;
 
 fn part1(entries: &Vec<i32>) -> i32 {
     for x in entries.iter() {
@@ -11,7 +13,19 @@ fn part1(entries: &Vec<i32>) -> i32 {
     -1
 }
 
-fn part2(_entries: &Vec<i32>) -> i32 {
+fn part2(entries: &Vec<i32>) -> i32 {
+    let entries_set = HashSet::<_>::from_iter(entries);
+
+    for x in entries.iter() {
+        for y in entries
+            .iter()
+            .filter(|&a| a+x < 2020)
+            .collect::<Vec<_>>() {
+            if entries_set.contains(&(2020-(x+y))) {
+                return x*y*(2020-(x+y))
+            }
+        }
+    }
     -1
 }
 
