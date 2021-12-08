@@ -2,7 +2,7 @@ from collections import defaultdict
 
 file = open("inputs/day8.txt", "r")
 test_file = open("inputs/day8_test.txt", "r")
-file = test_file
+# file = test_file
 
 lines = file.readlines()
 output_values = []
@@ -46,70 +46,130 @@ def update_line_map_for_unique(index, from_str, to_digit):
         chars_in_digit = 'abcdefg'
 
     for digit in from_str:
-        for i in chars_in_digit:
-            if digit in set_digits[index]:
+        if digit in set_digits[index]:
                 continue
-            if i in line_mapping[index][digit]:
-                set_digits[index].add(digit)
-                line_mapping[index][digit] = [i]
-                continue
-
-
-            line_mapping[index][digit].append(i)
-            # if digit in line_mapping[index][1][i] and digit not in line_mapping[index][2]:
-            #     line_mapping[index][2].add(digit)
-            #     line_mapping[index][1][i] = digit
-
-            # if type(line_mapping[index][1][i]) != list:
-            #     continue
-            # line_mapping[index][1][i].append(digit)
+        curr = line_mapping[index][digit]
+        if len(curr) == 0:
+            for i in chars_in_digit:
+                line_mapping[index][digit].append(i)
+        else:
+            line_mapping[index][digit] = list(set(curr) & set(list(chars_in_digit)))
 
 for line_num, input_value in enumerate(input_values):
     for index, string in enumerate(input_value):
         if len(string) in unique_digit_map.keys():
             update_line_map_for_unique(line_num, string, unique_digit_map[len(string)])
 
+    cf_candidates = []
+    for digit in line_mapping[line_num]:
+        if sorted(line_mapping[line_num][digit]) == ['c', 'f']:
+            cf_candidates.append(digit)
+
+    for index, string in enumerate(input_value):
+        num_cf_candidates = 0
+        f_candidate = ''
+        for digit in string:
+            if digit in cf_candidates:
+                num_cf_candidates += 1
+                f_candidate = digit
+            
+        if num_cf_candidates == 1 and len(string) == 6:
+            break
+
+    cf_candidates.remove(f_candidate)
+    c_candidate = cf_candidates[0]
+    line_mapping[line_num][f_candidate] = 'f'
+    line_mapping[line_num][c_candidate] = 'c'
+    set_digits[line_num].add(f_candidate)
+    set_digits[line_num].add(c_candidate)
+
+    for digit in line_mapping[line_num].keys():
+        if type(line_mapping[line_num][digit]) == list:
+            if 'f' in line_mapping[line_num][digit]:
+                line_mapping[line_num][digit].remove('f')
+            if 'c' in line_mapping[line_num][digit]:
+                line_mapping[line_num][digit].remove('c')
     
+    for digit in line_mapping[line_num].keys():
+        if type(line_mapping[line_num][digit]) == list:
+            if len(line_mapping[line_num][digit]) == 1:
+                line_mapping[line_num][digit] = line_mapping[line_num][digit][0]
+                set_digits[line_num].add(digit)
 
-    # eight_string = None
-    # nine_string = None
-    # for index, string in enumerate(input_value):
-    #     if len(string) == 7:
-    #         eight_string = string
-    # for index, string in enumerate(input_value):
-    #     num_not_in_set = 0
-    #     for character in string:
-    #         if character not in line_mapping[line_num][2]:
-    #             num_not_in_set += 1
-    #     if num_not_in_set == 1 and len(string) == 6:
-    #         nine_string = string
+    db_candidates = []
+    for digit in line_mapping[line_num]:
+        if sorted(line_mapping[line_num][digit]) == ['b', 'd']:
+            db_candidates.append(digit)
+
+    for index, string in enumerate(input_value):
+        num_db_candidates = 0
+        b_candidate = ''
+        for digit in string:
+            if digit in db_candidates:
+                num_db_candidates += 1
+                b_candidate = digit
+        if num_db_candidates == 1 and len(string) == 6:
+            break
+
+    db_candidates.remove(b_candidate)
+    d_candidate = db_candidates[0]
+    line_mapping[line_num][b_candidate] = 'b'
+    line_mapping[line_num][d_candidate] = 'd'
+    set_digits[line_num].add(b_candidate)
+    set_digits[line_num].add(d_candidate)
+
+    for digit in line_mapping[line_num].keys():
+        if type(line_mapping[line_num][digit]) == list:
+            if 'd' in line_mapping[line_num][digit]:
+                line_mapping[line_num][digit].remove('d')
+            if 'b' in line_mapping[line_num][digit]:
+                line_mapping[line_num][digit].remove('b')
     
-    # # convert eight_string and nine_string to lists
-    # eight_list = list(eight_string)
-    # nine_list = list(nine_string)
-    # for letter in nine_list:
-    #     eight_list.remove(letter)
+    for digit in line_mapping[line_num].keys():
+        if type(line_mapping[line_num][digit]) == list:
+            if len(line_mapping[line_num][digit]) == 1:
+                line_mapping[line_num][digit] = line_mapping[line_num][digit][0]
+                set_digits[line_num].add(digit)
 
-    # mapped_to_e = eight_list[0]
 
-    # line_mapping[line_num][1][4] = mapped_to_e
-    # line_mapping[line_num][2].add(mapped_to_e)
+    for set_digit in set_digits[line_num]:
+        mapped_to = line_mapping[line_num][set_digit]
+        for digit in line_mapping[line_num].keys():
+            if type(line_mapping[line_num][digit]) == list:
+                if mapped_to in line_mapping[line_num][digit]:
+                    line_mapping[line_num][digit].remove(mapped_to)
 
-    # all_chars = 'abcdefg'
-    # for char in all_chars:
-    #     if char not in line_mapping[line_num][2]:
-    #         line_mapping[line_num][1][6] = char
-    #         line_mapping[line_num][2].add(char)
-    #         break
+    eg_candidates = []
+    for digit in line_mapping[line_num]:
+        if sorted(line_mapping[line_num][digit]) == ['e', 'g']:
+            eg_candidates.append(digit)
 
+    print(eg_candidates)
+    for index, string in enumerate(input_value):
+        num_eg_candidates = 0
+        g_candidate = ''
+        for digit in string:
+            if digit in eg_candidates:
+                num_eg_candidates += 1
+                g_candidate = digit
+        if num_eg_candidates == 1 and len(string) == 6:
+            break
+
+    eg_candidates.remove(g_candidate)
+    e_candidate = eg_candidates[0]
+    line_mapping[line_num][e_candidate] = 'e'
+    line_mapping[line_num][g_candidate] = 'g'
+    set_digits[line_num].add(g_candidate)
+    set_digits[line_num].add(e_candidate)
+    
     print(line_mapping[line_num])
+    print(set_digits[line_num])
 
 def convert_string_with_mapping(line_num, string):
     curr_map = line_mapping[line_num]
     final_string = []
     for i, char in enumerate(string):
-        index = get_index(curr_map[1], char)
-        final_string.append(curr_map[0][index])
+        final_string.append(curr_map[char])
 
     print(string, "->", "".join(final_string))
     return ''.join(sorted(final_string))
@@ -127,6 +187,8 @@ string_to_digit = {
     'abcdfg': 9
 }
 
+total_sum = 0
+
 for line_num, output_value in enumerate(output_values):
     number = 0
     print(line_mapping[line_num])
@@ -135,6 +197,9 @@ for line_num, output_value in enumerate(output_values):
         digit = string_to_digit[fixed_string]
         number = number * 10 + digit
     print(number)
+    total_sum += number
 
 for i in range(7):
     print(line_mapping[i])
+
+print(total_sum)
