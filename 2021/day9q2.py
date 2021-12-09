@@ -28,12 +28,12 @@ while len(remaining_points) > 0:
 
     def get_basin_size(point):
         x, y = point
+        
         if x >= len(map) or x < 0: return 0
         if y >= len(map[0]) or y < 0: return 0
+        if map_of_nines[x][y]: return 0
+        if point in explored_points: return 0
 
-        if point in explored_points or point not in remaining_points: return 0
-
-        remaining_points.remove(point)
         explored_points.add(point)
 
         neighbors = [
@@ -46,7 +46,6 @@ while len(remaining_points) > 0:
         return sum(neighbors) + 1
 
     curr_point = remaining_points.pop()
-    remaining_points.add(curr_point)
     curr_size = get_basin_size(curr_point)
     sizes.append(curr_size)
 
