@@ -23,11 +23,11 @@ impl FromStr for Password {
             .map(|s| s.parse::<usize>().unwrap())
             .collect::<Vec<usize>>();
 
-        Ok(Password{
+        Ok(Password {
             lower_limit: range[0],
             upper_limit: range[1],
             character: character,
-            password_str: String::from(contents[2])
+            password_str: String::from(contents[2]),
         })
     }
 }
@@ -47,11 +47,21 @@ fn part2(password_entries: &Vec<Password>) -> i32 {
     let mut count: i32 = 0;
     for entry in password_entries.iter() {
         if &entry.password_str.len() < &entry.upper_limit {
-            continue
+            continue;
         }
 
-        let matches_first = &entry.password_str.chars().nth(entry.lower_limit-1).unwrap() == &entry.character;
-        let matches_second = &entry.password_str.chars().nth(entry.upper_limit-1).unwrap() == &entry.character;
+        let matches_first = &entry
+            .password_str
+            .chars()
+            .nth(entry.lower_limit - 1)
+            .unwrap()
+            == &entry.character;
+        let matches_second = &entry
+            .password_str
+            .chars()
+            .nth(entry.upper_limit - 1)
+            .unwrap()
+            == &entry.character;
 
         if matches_first ^ matches_second {
             count += 1;
@@ -61,7 +71,6 @@ fn part2(password_entries: &Vec<Password>) -> i32 {
 }
 
 pub fn solve(file_name: &str, part: i32) -> i128 {
-
     let contents = fs::read_to_string(file_name).expect("File Error");
     println!("{}", contents);
 
@@ -71,10 +80,10 @@ pub fn solve(file_name: &str, part: i32) -> i128 {
         .filter(|s| !s.is_empty())
         .map(|s| Password::from_str(s).unwrap())
         .collect();
-    
+
     match part {
         1 => part1(&password_entries).into(),
         2 => part2(&password_entries).into(),
-        _ => -1
+        _ => -1,
     }
 }

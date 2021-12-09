@@ -2,42 +2,36 @@ use std::fs;
 
 fn is_valid(passport: &str) -> bool {
     let passport_string = String::from(passport).replace("\n", " ");
-    let passpost_fields: Vec<&str> = passport_string
-        .split(" ")
-        .collect::<Vec<_>>();
+    let passpost_fields: Vec<&str> = passport_string.split(" ").collect::<Vec<_>>();
 
     let mut field_count: usize = 0;
     let mut seen_cid: bool = false;
 
     for field in passpost_fields.iter() {
-        let split: Vec<&str> = field
-            .split(":")
-            .collect();
+        let split: Vec<&str> = field.split(":").collect();
         field_count += 1;
         match split[0] {
             "byr" => {
                 let birth_year = split[1].parse().unwrap_or(-1);
                 if birth_year < 1920 || birth_year > 2002 {
-                    return false
+                    return false;
                 }
             }
             "iyr" => {
                 let issue_year = split[1].parse().unwrap_or(-1);
                 if issue_year < 2010 || issue_year > 2020 {
-                    return false
+                    return false;
                 }
             }
             "eyr" => {
                 let exp_year = split[1].parse().unwrap_or(-1);
                 if exp_year < 2020 || exp_year > 2030 {
-
-                    return false
+                    return false;
                 }
             }
             "hgt" => {
                 let re = regex::Regex::new(r"([\d]+)(cm|in)").unwrap();
                 if !re.is_match(split[1]) {
-
                     return false;
                 }
                 let captures = re.captures(split[1]).unwrap();
@@ -46,7 +40,7 @@ fn is_valid(passport: &str) -> bool {
                 match captures.get(2).unwrap().as_str() {
                     "cm" => {
                         if height < 150 || height > 193 {
-                            return false
+                            return false;
                         }
                     }
                     "in" => {
@@ -54,7 +48,7 @@ fn is_valid(passport: &str) -> bool {
                             return false;
                         }
                     }
-                    _ => return false
+                    _ => return false,
                 }
             }
             "hcl" => {
@@ -64,8 +58,10 @@ fn is_valid(passport: &str) -> bool {
                 }
             }
             "ecl" => {
-                if !matches!(split[1], "amb" | "blu" | "brn" | "gry" | "grn" | "hzl" | "oth") {
-                    
+                if !matches!(
+                    split[1],
+                    "amb" | "blu" | "brn" | "gry" | "grn" | "hzl" | "oth"
+                ) {
                     return false;
                 }
             }
@@ -78,12 +74,11 @@ fn is_valid(passport: &str) -> bool {
             "cid" => {
                 seen_cid = true;
             }
-            _ => field_count -= 1
+            _ => field_count -= 1,
         }
     }
 
     field_count == 8 || (field_count == 7 && !seen_cid)
-    
 }
 
 fn part1(passports: &Vec<&str>) -> i128 {
@@ -91,8 +86,7 @@ fn part1(passports: &Vec<&str>) -> i128 {
     for passport in passports.iter() {
         if passport.matches(":").count() == 8 {
             total_valid += 1;
-        }
-        else if passport.matches(":").count() == 7 && !passport.contains("cid:") {
+        } else if passport.matches(":").count() == 7 && !passport.contains("cid:") {
             total_valid += 1
         }
     }
@@ -110,7 +104,6 @@ fn part2(passports: &Vec<&str>) -> i128 {
 }
 
 pub fn solve(file_name: &str, part: i32) -> i128 {
-
     let contents = fs::read_to_string(file_name).expect("File Error");
 
     let passports: Vec<&str> = contents
@@ -128,6 +121,6 @@ pub fn solve(file_name: &str, part: i32) -> i128 {
         // idk whats the error and not worth it to fix
         // at least for a question like this
         2 => part2(&passports),
-        _ => -1
+        _ => -1,
     }
 }

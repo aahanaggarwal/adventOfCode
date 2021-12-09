@@ -3,13 +3,12 @@ use std::fs;
 fn build_map(lines: &Vec<&str>) -> Vec<Vec<bool>> {
     lines
         .iter()
-        .map(|&line| 
-            line
-            .chars()
-            .into_iter()
-            .map(|c| c == '#')
-            .collect::<Vec<_>>()
-        )
+        .map(|&line| {
+            line.chars()
+                .into_iter()
+                .map(|c| c == '#')
+                .collect::<Vec<_>>()
+        })
         .collect()
 }
 
@@ -47,7 +46,6 @@ fn part2(map: &Vec<Vec<bool>>) -> i128 {
 }
 
 pub fn solve(file_name: &str, part: i32) -> i128 {
-
     let contents = fs::read_to_string(file_name).expect("File Error");
     let lines = contents
         .split("\n")
@@ -57,10 +55,10 @@ pub fn solve(file_name: &str, part: i32) -> i128 {
 
     let map = build_map(&lines);
     println!("{:?}", map);
-    
+
     match part {
         1 => part1(&map, 3, 1).into(),
         2 => part2(&map),
-        _ => -1
+        _ => -1,
     }
 }
