@@ -22,6 +22,7 @@ fn main() {
         3 => day3::solve(&file_name, part),
         4 => day4::solve(&file_name, part),
         5 => day5::solve(&file_name, part),
+        6 => day6::solve(&file_name, part),
         _ => {
             println!("Invalid args!");
             -1
