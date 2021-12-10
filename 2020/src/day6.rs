@@ -1,4 +1,4 @@
-use std::{clone, collections::HashSet, fs};
+use std::{collections::HashSet, fs};
 
 fn part1(answers: &Vec<Vec<&str>>) -> i128 {
     let mut count: usize = 0;
