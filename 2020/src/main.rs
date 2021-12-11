@@ -17,13 +17,13 @@ fn main() {
     let file_name = format!("inputs/day{}.{}", day_num, file_ext);
 
     answer = match day_num {
-        1 => day1::solve(&file_name, part),
-        2 => day2::solve(&file_name, part),
-        3 => day3::solve(&file_name, part),
-        4 => day4::solve(&file_name, part),
-        5 => day5::solve(&file_name, part),
-        6 => day6::solve(&file_name, part),
-        7 => day7::solve(&file_name, part),
+        1 => day01::solve(&file_name, part),
+        2 => day02::solve(&file_name, part),
+        3 => day03::solve(&file_name, part),
+        4 => day04::solve(&file_name, part),
+        5 => day05::solve(&file_name, part),
+        6 => day06::solve(&file_name, part),
+        7 => day07::solve(&file_name, part),
         _ => {
             println!("Invalid args!");
             -1
