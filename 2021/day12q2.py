@@ -37,13 +37,9 @@ for line in lines:
 # thinking about it, if we traverse backwards we should be able to 
 # memoize... dont wanna try yet
 def ways_to_end(node: str, curr_path: List[str], visited_special: bool) -> int:
-    if node_type(node) == CaveType.END:
-        return 1
-    if node_type(node) == CaveType.START and node in curr_path:
-        return 0
-
-    if visited_special and node_type(node) == CaveType.SMALL and node in curr_path:
-        return 0
+    if node_type(node) == CaveType.END: return 1
+    if node_type(node) == CaveType.START and node in curr_path: return 0
+    if visited_special and node_type(node) == CaveType.SMALL and node in curr_path: return 0
 
     curr_ways = 0
     new_path = curr_path + [node]

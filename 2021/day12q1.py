@@ -39,12 +39,9 @@ for line in lines:
 
 
 def ways_to_end(node: str, curr_path: List[str]) -> int:
-    if node_type(node) == CaveType.END:
-        return 1
-    if node_type(node) == CaveType.SMALL and node in curr_path:
-        return 0
-    if node_type(node) == CaveType.START and node in curr_path:
-        return 0
+    if node_type(node) == CaveType.END: return 1
+    if node_type(node) == CaveType.SMALL and node in curr_path: return 0
+    if node_type(node) == CaveType.START and node in curr_path: return 0
 
     # now i am at some node which I can explore from
     # go through all neighbors, and add their vals
