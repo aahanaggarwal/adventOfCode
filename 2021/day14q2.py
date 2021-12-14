@@ -28,8 +28,8 @@ for step in range(40):
     print(pairs, overlaps)
 
 counts = defaultdict(float)
+counts[template[0]] += 1
 for key, val in pairs.items():
-    counts[key[0]] += val / 2
-    counts[key[1]] += val / 2
+    counts[key[1]] += val
 
 print(max(counts.values()) - min(counts.values()))
