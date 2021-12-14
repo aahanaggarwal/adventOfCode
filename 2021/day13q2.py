@@ -1,6 +1,8 @@
 file = open("inputs/day13.txt", 'r')
 test_file = open("inputs/day13_test.txt", 'r')
+aahan_file = open("inputs/day13_aahan.txt", 'r')
 # file = test_file
+file = aahan_file
 
 lines = file.readlines()
 points = set()
@@ -50,7 +52,7 @@ for y in range(max_y+1):
     board.append([" "]*(max_x+1))
 
 for point in points:
-    board[point[1]][point[0]] = '#'
+    board[point[1]][point[0]] = '█'
 
 board = ["".join(line) for line in board]
 board = '\n'.join(board)
