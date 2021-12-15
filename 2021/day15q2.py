@@ -1,7 +1,6 @@
 from collections import defaultdict
 import heapq
 import numpy as np
-from functools import lru_cache
 
 file = open("inputs/day15.txt", 'r')
 test_file = open("inputs/day15_test.txt", 'r')
@@ -30,7 +29,6 @@ for i in range(5):
     full_new_map.append(np.concatenate(np.array(new_row, dtype=int), axis=1))
 full_new_map = np.concatenate(np.array(full_new_map, dtype=int))
 map = np.ndarray.tolist(full_new_map)
-print(map)
 
 max_row = len(map) - 1
 max_col = len(map[0]) - 1
@@ -41,7 +39,6 @@ source = (0, 0)
 target = (max_row, max_col)
 dist[source] = 0
 
-@lru_cache(maxsize=32)
 def get_neighbors(point):
     x, y = point
     neighbors = []
@@ -53,7 +50,8 @@ def get_neighbors(point):
         neighbors.append((x + 1, y))
     if y < max_col:
         neighbors.append((x, y + 1))
-    return neighbors
+
+    return set(neighbors) - visited
 
 
 to_visit = []
@@ -72,12 +70,17 @@ def set_dist_to_target(point):
     visited.add(point)
 
 
-while len(to_visit) > 0:
-    x, curr = heapq.heappop(to_visit)
+to_visit_set = set()
+to_visit_set.add(source)
+while len(to_visit) > 0 and target not in visited:
+    _, curr = heapq.heappop(to_visit)
+    to_visit_set.remove(curr)
     set_dist_to_target(curr)
     for neighbor in get_neighbors(curr):
-        if neighbor not in visited and (dist[neighbor], neighbor) not in to_visit:
-            heapq.heappush(to_visit, (dist[neighbor], neighbor))
+        weight = dist[neighbor]
+        if neighbor not in visited and neighbor not in to_visit_set:
+            heapq.heappush(to_visit, (weight, neighbor))
+            to_visit_set.add(neighbor)
 
 
 print(dist[target])
