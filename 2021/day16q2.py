@@ -18,11 +18,12 @@ for digit in bit_str:
     bits.extend([int(x) for x in bin_digits])
 
 
-def get_n_bit_number(packet, index, n):
+def get_n_bit_number(n):
+    global index
     num_str = ''
     for i in range(index, index + n):
-        num_str += str(packet[i])
-
+        num_str += str(bits[i])
+    index += n
     return int(num_str, 2)
 
 def compute_value(type, values):
@@ -41,63 +42,48 @@ def compute_value(type, values):
     elif type == 7:
         return 1 if values[0] == values[1] else 0
 
-def parse_packet(packet: list):
-    index = 0
-    n = len(packet)
 
-    while index < n:
-        # get version
-        total_version = get_n_bit_number(packet, index, 3)
-        index += 3
+index = 0
+def parse_packet():
+    global index
+    # get version
+    total_version = get_n_bit_number(3)
 
-        # get type
-        type = get_n_bit_number(packet, index, 3)
-        index += 3
+    # get type
+    type = get_n_bit_number(3)
 
-        if type == 4:
-            num_str = packet[index + 1:index + 5]
-            while packet[index] != 0:
-                index += 5
-                num_str.extend(packet[index + 1:index + 5])
-
-            number = int("".join([str(num) for num in num_str]), 2)
+    if type == 4:
+        bitlist = bits[index + 1:index + 5]
+        while bits[index] != 0:
             index += 5
-            return number, index
+            bitlist.extend(bits[index + 1:index + 5])
+
+        number = 0
+        for bit in bitlist:
+            number = (number << 1) | bit
+        index += 5
+        return number
+
+    else:
+        operator_encoding = bits[index]
+        index += 1
+        packet_values = []
+        if operator_encoding == 0:
+            sub_packets_length = get_n_bit_number(15)
+
+            end_index = index + sub_packets_length
+
+            while index < end_index:
+                packet_values.append(parse_packet())
 
         else:
-            operator_encoding = packet[index]
-            index += 1
-            if operator_encoding == 0:
-                sub_packets_length = get_n_bit_number(packet, index, 15)
-                index += 15
+            num_sub_packets = get_n_bit_number(11)
+            for _ in range(num_sub_packets):
+                packet_values.append(parse_packet())
 
-                offset = 0
-                packet_values = []
+        value = compute_value(type, packet_values)
 
-                while offset < sub_packets_length:
-                    value, offset_diff = parse_packet(packet[index + offset:])
-                    packet_values.append(value)
-                    offset += offset_diff
-
-                value = compute_value(type, packet_values)
-
-                return value, index + offset
-
-            else:
-                num_sub_packets = get_n_bit_number(packet, index, 11)
-                index += 11
-
-                offset = 0
-                packet_values = []
-
-                for _ in range(num_sub_packets):
-                    value, offset_diff = parse_packet(packet[index + offset:])
-                    packet_values.append(value)
-                    offset += offset_diff
-
-                value = compute_value(type, packet_values)
-
-                return value, index + offset
+        return value
 
 
-print(parse_packet(bits)[0])
+print(parse_packet())
