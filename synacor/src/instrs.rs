@@ -1,3 +1,4 @@
+use std::io::{self, Read};
 use std::process::exit;
 
 use crate::{
@@ -246,4 +247,16 @@ pub fn ret(mut _instr_ptr: usize, _program: &Vec<u16>, state: &mut Storage) -> u
         Some(a) => a as usize,
         _ => exit(0),
     }
+}
+
+pub fn in_(mut instr_ptr: usize, program: &Vec<u16>, state: &mut Storage) -> usize {
+    instr_ptr += 1;
+    let reg_num = utils::get_reg_num(program[instr_ptr]);
+
+    let mut buffer = [0; 1];
+    let _ = io::stdin().read(&mut buffer);
+    let val = buffer[0] as u16;
+    state.registers[reg_num] = val;
+
+    instr_ptr + 1
 }

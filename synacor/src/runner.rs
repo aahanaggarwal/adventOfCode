@@ -28,6 +28,7 @@ fn get_instruction(num: u16) -> &'static str {
         15 => "rmem",
         16 => "wmem",
         18 => "ret",
+        20 => "in",
         _ => {
             println!("Instrction not implemented: {}", num);
             panic!("Not an instruction!")
@@ -64,6 +65,7 @@ fn exec_instr(program: &mut Vec<u16>, state: &mut Storage, instr_ptr: usize) -> 
         "rmem" => instrs::rmem(instr_ptr, program, state),
         "wmem" => instrs::wmem(instr_ptr, program, state),
         "ret" => instrs::ret(instr_ptr, program, state),
+        "in" => instrs::in_(instr_ptr, program, state),
         _ => {
             panic!("Wut");
         }
