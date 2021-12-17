@@ -36,20 +36,17 @@ def compute_value(type, values):
     elif type == 3:
         return max(values)
     elif type == 5:
-        return 1 if values[0] > values[1] else 0
+        return int(values[0] > values[1])
     elif type == 6:
-        return 1 if values[0] < values[1] else 0
+        return int(values[0] < values[1])
     elif type == 7:
-        return 1 if values[0] == values[1] else 0
+        return int(values[0] == values[1])
 
 
 index = 0
 def parse_packet():
     global index
-    # get version
-    total_version = get_n_bit_number(3)
-
-    # get type
+    _ = get_n_bit_number(3)
     type = get_n_bit_number(3)
 
     if type == 4:
@@ -70,9 +67,7 @@ def parse_packet():
         packet_values = []
         if operator_encoding == 0:
             sub_packets_length = get_n_bit_number(15)
-
             end_index = index + sub_packets_length
-
             while index < end_index:
                 packet_values.append(parse_packet())
 
