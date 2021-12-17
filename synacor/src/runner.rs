@@ -11,6 +11,8 @@ fn get_instruction(num: u16) -> &'static str {
         21 => "noop",
         19 => "out",
         6 => "jmp",
+        7 => "jt",
+        8 => "jf",
         _ => {
             println!("Instrction not implemented: {}", num);
             panic!("Not an instruction!")
@@ -27,32 +29,26 @@ fn parse_instruction(program: &Vec<u16>, instr_ptr: usize) -> usize {
     match instr {
         "noop" => {
             // We can just advance to next instr and continue
-            new_instr_ptr += 1;
+            new_instr_ptr + 1
         }
         "out" => {
             // We want to print the next byte
-            new_instr_ptr += 1;
-            instrs::out(program[new_instr_ptr]);
-            new_instr_ptr += 1;
+            instrs::out(new_instr_ptr, &program)
         }
         "halt" => {
             // Exit the program
-            exit(0)
+            exit(0);
         }
         "jmp" => {
             // Get num and set new_instr_ptr to that
-            println!("{}", new_instr_ptr);
-            new_instr_ptr += 1;
-            let new_loc: usize = program[new_instr_ptr] as usize;
-            println!("{}", new_loc);
-            new_instr_ptr = new_loc;
+            instrs::jmp(new_instr_ptr, &program)
         }
+        "jt" => instrs::jt(new_instr_ptr, &program),
+        "jf" => instrs::jf(new_instr_ptr, &program),
         _ => {
-            println!("Wut");
+            panic!("Wut");
         }
     }
-
-    new_instr_ptr
 }
 
 pub fn run_program(program: &Vec<u16>) {
