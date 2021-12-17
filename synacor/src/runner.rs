@@ -1,6 +1,6 @@
 use std::process::exit;
 
-use crate::instrs;
+use crate::{instrs, storage::Storage};
 
 fn get_instruction(num: u16) -> &'static str {
     if num > 21 {
@@ -13,6 +13,7 @@ fn get_instruction(num: u16) -> &'static str {
         6 => "jmp",
         7 => "jt",
         8 => "jf",
+        1 => "set",
         _ => {
             println!("Instrction not implemented: {}", num);
             panic!("Not an instruction!")
@@ -22,38 +23,28 @@ fn get_instruction(num: u16) -> &'static str {
     &str
 }
 
-fn parse_instruction(program: &Vec<u16>, instr_ptr: usize) -> usize {
-    let mut new_instr_ptr = instr_ptr;
-    let instr = get_instruction(program[new_instr_ptr]);
+fn exec_instr(program: &Vec<u16>, state: &mut Storage, instr_ptr: usize) -> usize {
+    let instr = get_instruction(program[instr_ptr]);
 
     match instr {
-        "noop" => {
-            // We can just advance to next instr and continue
-            new_instr_ptr + 1
-        }
-        "out" => {
-            // We want to print the next byte
-            instrs::out(new_instr_ptr, &program)
-        }
+        "noop" => instr_ptr + 1,
+        "out" => instrs::out(instr_ptr, program, state),
         "halt" => {
-            // Exit the program
             exit(0);
         }
-        "jmp" => {
-            // Get num and set new_instr_ptr to that
-            instrs::jmp(new_instr_ptr, &program)
-        }
-        "jt" => instrs::jt(new_instr_ptr, &program),
-        "jf" => instrs::jf(new_instr_ptr, &program),
+        "jmp" => instrs::jmp(instr_ptr, program, state),
+        "jt" => instrs::jt(instr_ptr, program, state),
+        "jf" => instrs::jf(instr_ptr, program, state),
+        "set" => instrs::set(instr_ptr, program, state),
         _ => {
             panic!("Wut");
         }
     }
 }
 
-pub fn run_program(program: &Vec<u16>) {
+pub fn run_program(program: &Vec<u16>, state: &mut Storage) {
     let mut instr_ptr = 0;
     loop {
-        instr_ptr = parse_instruction(program, instr_ptr);
+        instr_ptr = exec_instr(program, state, instr_ptr);
     }
 }
