@@ -9,7 +9,7 @@ pub struct Storage {
 
 impl Storage {
     pub fn new() -> Storage {
-        let mut registers: Vec<u16> = vec![0, 0, 0, 0, 0, 0, 0, 0];
+        let registers: Vec<u16> = vec![0, 0, 0, 0, 0, 0, 0, 0];
         Storage {
             memory: HashMap::new(),
             registers: registers,

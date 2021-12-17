@@ -7,8 +7,8 @@ fn main() {
     // Read file into bit array
     let file_path = "/home/aahan/adventOfCode/synacor/challenge.bin";
     let byte_vector = fs::read(file_path).unwrap();
-    let program = parser::get_number_vec(&byte_vector);
+    let mut program = parser::get_number_vec(&byte_vector);
     let mut state = storage::Storage::new();
 
-    runner::run_program(&program, &mut state);
+    runner::run_program(&mut program, &mut state);
 }
